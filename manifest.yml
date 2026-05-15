@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chronos
+  namespace: esteves
+  labels:
+    app: chronos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chronos
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chronos
+    spec:
+      containers:
+        - name: chronos
+          image: joeesteves/chronos:latest
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chronos
+  namespace: esteves
+  labels:
+    app: chronos
+spec:
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: 80
+  selector:
+    app: chronos
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chronos-ingress
+  namespace: esteves
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - clock.esteves.ar
+      secretName: chronos-tls
+  rules:
+    - host: clock.esteves.ar
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chronos
+                port:
+                  number: 80
