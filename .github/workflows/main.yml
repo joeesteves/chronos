@@ -47,11 +47,12 @@ jobs:
 
       - name: Configure kubeconfig
         env:
-          KUBECONFIG_B64: ${{ secrets.KUBECONFIG }}
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
         run: |
           mkdir -p ~/.kube
-          printf '%s' "$KUBECONFIG_B64" | base64 --decode > ~/.kube/config
+          printf '%s' "$KUBECONFIG_CONTENT" > ~/.kube/config
           chmod 600 ~/.kube/config
+          kubectl config current-context
 
       - name: Deploy to Kubernetes
         run: |
