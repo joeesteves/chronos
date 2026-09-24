@@ -10,10 +10,54 @@
   </head>
   <body>
     <div id="app">
+      <div class="mode-label" id="mode-label">Stopwatch</div>
       <div class="display" id="display">00:00:00.000</div>
+      <div class="duration-config" id="duration-config" hidden>
+        <label>
+          <span>Hours</span>
+          <input id="hours" type="number" min="0" max="99" value="0" inputmode="numeric" />
+        </label>
+        <span class="duration-separator">:</span>
+        <label>
+          <span>Minutes</span>
+          <input id="minutes" type="number" min="0" max="59" value="5" inputmode="numeric" />
+        </label>
+        <span class="duration-separator">:</span>
+        <label>
+          <span>Seconds</span>
+          <input id="seconds" type="number" min="0" max="59" value="0" inputmode="numeric" />
+        </label>
+        <label class="alarm-option">
+          <input id="infinite-alarm" type="checkbox" />
+          <span>Ring until stopped</span>
+        </label>
+      </div>
       <div class="controls">
         <button id="toggle">Start</button>
         <button id="clear">Clear</button>
+        <button id="stop-alarm" type="button" hidden>Stop alarm</button>
+        <div class="clock-menu">
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            type="button"
+            aria-label="Choose clock"
+            aria-controls="clock-options"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div class="menu-options" id="clock-options" role="menu" hidden>
+            <button class="menu-option active" type="button" role="menuitem" data-mode="stopwatch">
+              Stopwatch
+            </button>
+            <button class="menu-option" type="button" role="menuitem" data-mode="countdown">
+              Countdown timer
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <script type="module" src="/src/main.js"></script>
