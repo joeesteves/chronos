@@ -36,7 +36,9 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/chronos:latest
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/chronos:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/chronos:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -55,6 +57,8 @@ jobs:
           kubectl config current-context
 
       - name: Deploy to Kubernetes
+        env:
+          IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/chronos:${{ github.sha }}
         run: |
-          kubectl -n esteves rollout restart deployment/chronos
+          kubectl -n esteves set image deployment/chronos chronos="$IMAGE"
           kubectl -n esteves rollout status deployment/chronos --timeout=120s
